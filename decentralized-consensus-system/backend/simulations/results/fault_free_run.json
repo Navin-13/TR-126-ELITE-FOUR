@@ -1,0 +1,8 @@
+{
+  "status": "Success",
+  "total_nodes": 9,
+  "faulty_nodes": 0,
+  "total_messages_exchanged": 54,
+  "blocks_committed": 3,
+  "avg_latency_ms": 0.3333886464436849
+}
