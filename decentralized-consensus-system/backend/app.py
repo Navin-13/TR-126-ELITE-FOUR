@@ -6,6 +6,7 @@ from flask_cors import CORS
 # Define paths relative to the backend folder
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
+FRONTEND_3D_DIR = os.path.join(BASE_DIR, 'frontend-3d')
 
 app = Flask(__name__, static_folder=FRONTEND_DIR)
 CORS(app)  # Allow cross-origin if needed
@@ -22,6 +23,17 @@ def serve_static(path):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/3d/')
+def serve_3d_index():
+    return send_from_directory(FRONTEND_3D_DIR, 'index.html')
+
+@app.route('/3d/<path:path>')
+def serve_3d_static(path):
+    if path != "" and os.path.exists(os.path.join(FRONTEND_3D_DIR, path)):
+        return send_from_directory(FRONTEND_3D_DIR, path)
+    else:
+        return send_from_directory(FRONTEND_3D_DIR, 'index.html')
 
 @app.route('/api/simulation/latest', methods=['GET'])
 def get_latest_simulation():
@@ -58,6 +70,8 @@ def trigger_simulation():
 
 if __name__ == '__main__':
     # Run the server on port 5000
-    print(f"Serving Website from: {FRONTEND_DIR}")
-    print("Dashboard available at: http://localhost:5000")
+    print(f"Serving Original Website from: {FRONTEND_DIR}")
+    print(f"Serving 3D Clone Website from: {FRONTEND_3D_DIR}")
+    print("Dashboard available at: http://localhost:5000/")
+    print("3D Dashboard available at: http://localhost:5000/3d/")
     app.run(host='0.0.0.0', port=5000, debug=True)

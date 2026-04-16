@@ -140,70 +140,79 @@ document.addEventListener('DOMContentLoaded', () => {
     // Poll the backend periodically
     setInterval(fetchSimulationData, 3500);
     // Topology Visualizer
+    let currentGraph = null;
+    let spinInterval = null;
+    let isPaused = false;
+    let angle = 0;
+
+    const toggleBtn = document.getElementById('toggle-spin-btn');
+    if(toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            if(isPaused) {
+                toggleBtn.innerHTML = '<i class="fas fa-play"></i> Resume Camera';
+                toggleBtn.style.background = 'rgba(255,255,255,0.1)';
+            } else {
+                toggleBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Camera';
+                toggleBtn.style.background = '';
+            }
+        });
+    }
+
     function drawTopology(numNodes) {
-        const canvas = document.getElementById('topologyCanvas');
-        if(!canvas) return;
-        const ctx = canvas.getContext('2d');
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
-        const radius = Math.min(cx, cy) - 40;
-
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Cap nodes purely for rendering aesthetics so it doesn't become a solid blur of lines
-        const drawNodes = Math.min(numNodes, 40); 
+        const container = document.getElementById('3d-graph');
+        if(!container) return;
+        
+        // Generate dataset for a complete network mesh
         const nodes = [];
-
-        // Generate Node Coordinates on a Ring
-        for(let i=0; i<drawNodes; i++) {
-            const angle = (i / drawNodes) * (2 * Math.PI);
-            nodes.push({
-                x: cx + radius * Math.cos(angle),
-                y: cy + radius * Math.sin(angle)
+        const links = [];
+        
+        for (let i = 0; i < numNodes; i++) {
+            nodes.push({ 
+                id: i, 
+                group: i === 0 ? 'leader' : 'follower'
             });
         }
-
-        // Draw Edges First (Underneath)
-        ctx.strokeStyle = 'rgba(99, 102, 241, 0.15)'; // primary-glow theme
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for(let i=0; i<nodes.length; i++) {
-            for(let j=i+1; j<nodes.length; j++) {
-                ctx.moveTo(nodes[i].x, nodes[i].y);
-                ctx.lineTo(nodes[j].x, nodes[j].y);
+        
+        // Connect every node to every other node (capped rendering for performance)
+        const renderEdges = Math.min(numNodes, 30);
+        for (let i = 0; i < renderEdges; i++) {
+            for (let j = i + 1; j < renderEdges; j++) {
+                links.push({ source: i, target: j });
             }
         }
-        ctx.stroke();
+        
+        const gData = { nodes, links };
 
-        // Draw Nodes
-        nodes.forEach((n, idx) => {
-            // Glow effect
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = '#8b5cf6';
-            
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, 6, 0, 2*Math.PI);
-            // Highlight a 'leader' node in pink
-            ctx.fillStyle = idx === 0 ? '#ec4899' : '#f8fafc';
-            ctx.fill();
-            
-            // Outer ring
-            ctx.shadowBlur = 0;
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, 10, 0, 2*Math.PI);
-            ctx.strokeStyle = idx === 0 ? '#ec4899' : '#6366f1';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        });
-
-        // Add a central pulse just for wow-factor design
-        ctx.beginPath();
-        let pulseGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.8);
-        pulseGrad.addColorStop(0, "rgba(236, 72, 153, 0.15)");
-        pulseGrad.addColorStop(1, "transparent");
-        ctx.fillStyle = pulseGrad;
-        ctx.arc(cx, cy, radius * 0.8, 0, 2*Math.PI);
-        ctx.fill();
+        if (!currentGraph) {
+            // First time initialization
+            currentGraph = ForceGraph3D()(container)
+                .width(container.parentElement.clientWidth)
+                .height(container.parentElement.clientHeight)
+                .backgroundColor('rgba(0,0,0,0)')
+                .nodeResolution(16)
+                .nodeRelSize(6)
+                .nodeLabel(node => Array.from(node.group)[0].toUpperCase() + node.group.slice(1) + " Agent " + node.id)
+                .nodeAutoColorBy('group')
+                .linkColor(() => 'rgba(99, 102, 241, 0.3)') // --primary-glow
+                .linkWidth(0.5)
+                .enableNodeDrag(true);
+                
+            // Set up a SINGLE spin loop that respects the pause state
+            spinInterval = setInterval(() => {
+                if(!isPaused) {
+                    currentGraph.cameraPosition({
+                        x: 200 * Math.sin(angle),
+                        z: 200 * Math.cos(angle)
+                    });
+                    angle += Math.PI / 800; // spin speed
+                }
+            }, 30);
+        }
+        
+        currentGraph.graphData(gData);
+        
+        // Apply our theme colors
+        currentGraph.nodeColor(node => node.group === 'leader' ? '#ec4899' : '#6366f1');
     }
 });

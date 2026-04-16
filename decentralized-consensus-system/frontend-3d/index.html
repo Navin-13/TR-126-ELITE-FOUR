@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
+    <!-- 3D Force Graph Library -->
+    <script src="https://unpkg.com/3d-force-graph"></script>
 </head>
 <body>
     <div class="app-container">
@@ -168,8 +170,11 @@
                         <h2>Network Topology Interactive Map</h2>
                         <p style="color: var(--text-muted); margin-bottom: 20px;">Real-time node mesh visualization of the decentralized protocol.</p>
                         
-                        <div style="position: relative; width: 100%; height: 500px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                            <canvas id="topologyCanvas" width="600" height="500"></canvas>
+                        <div id="3d-graph-container" style="position: relative; width: 100%; height: 500px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <div id="3d-graph"></div>
+                            <button id="toggle-spin-btn" class="btn btn-primary" style="position: absolute; bottom: 20px; right: 20px; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                                <i class="fas fa-pause"></i> Pause Camera
+                            </button>
                         </div>
                     </div>
                     <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
