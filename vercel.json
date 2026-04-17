@@ -1,0 +1,10 @@
+flask==3.0.3
+flask-cors==4.0.1
+flask-restx==1.3.0
+python-dotenv==1.0.0
+networkx==3.2.1
+numpy==1.26.4
+matplotlib==3.8.4
+pandas==2.2.2
+pytest==8.2.0
+gunicorn==22.0.0

@@ -1,34 +1,39 @@
-from core.consensus import ConsensusProtocol, Message
+"""Configuration for the backend application"""
 
-class Agent:
-    def __init__(self, agent_id):
-        self.id = agent_id
-        self.inbox = []
-        self.outbox = []
-        self.committed_blocks = []
-        self.protocol = ConsensusProtocol(self)
+import os
+from dotenv import load_dotenv
 
-    def receive_message(self, msg):
-        self.inbox.append(msg)
+load_dotenv()
 
-    def process_step(self, total_nodes):
-        current_inbox = self.inbox.copy()
-        self.inbox.clear()
+class Config:
+    """Base configuration"""
+    FLASK_ENV = os.getenv('FLASK_ENV', 'development')
+    DEBUG = FLASK_ENV == 'development'
+    TESTING = False
+    
+    # API Configuration
+    MAX_AGENTS = 1000
+    MAX_SIMULATION_STEPS = 5000
+    
+    # Upload/Download paths
+    UPLOAD_FOLDER = 'simulations'
+    SIMULATION_RESULTS_PATH = os.path.join(UPLOAD_FOLDER, 'results')
+    VISUALIZATION_PATH = os.path.join(UPLOAD_FOLDER, 'visualizations')
+    
+    # Create folders if they don't exist
+    os.makedirs(SIMULATION_RESULTS_PATH, exist_ok=True)
+    os.makedirs(VISUALIZATION_PATH, exist_ok=True)
 
-        for msg in current_inbox:
-            broadcast_msgs = self.protocol.process_message(msg, total_nodes)
-            self.outbox.extend(broadcast_msgs)
-            
-    def propose_block(self, block_id):
-        # The leader proposes a block
-        msg = Message(self.id, "PRE_PREPARE", block_id, data="Block_Data")
-        self.outbox.append(msg)
+class DevelopmentConfig(Config):
+    """Development configuration"""
+    DEBUG = True
 
-    def commit_block(self, block_id):
-        if block_id not in self.committed_blocks:
-            self.committed_blocks.append(block_id)
+class ProductionConfig(Config):
+    """Production configuration"""
+    DEBUG = False
 
-    def get_outbox_and_clear(self):
-        msgs = self.outbox.copy()
-        self.outbox.clear()
-        return msgs
+config = {
+    'development': DevelopmentConfig,
+    'production': ProductionConfig,
+    'default': DevelopmentConfig
+}
