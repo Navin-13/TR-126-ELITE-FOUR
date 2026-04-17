@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralized Consensus System</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-network-wired"></i>
+                <h2>Nexus<span>Consensus</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</li>
+                <li data-tab="simulations"><i class="fas fa-play-circle"></i> Simulations</li>
+                <li data-tab="network"><i class="fas fa-project-diagram"></i> Network View</li>
+                <li data-tab="settings"><i class="fas fa-cog"></i> Settings</li>
+            </ul>
+            <div class="server-status">
+                <div class="status-indicator online"></div>
+                <span>API Local (Python)</span>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="greeting">
+                    <h1>System Overview</h1>
+                    <p>Real-time metrics for your decentralized consensus networks.</p>
+                </div>
+                <div class="actions">
+                    <button id="run-sim-btn" class="btn btn-primary"><i class="fas fa-plus"></i> New Simulation</button>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="dashboard" class="view-section active-view">
+                <!-- Data Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="icon-wrapper blue">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Active Agents</h3>
+                            <h2 id="agent-count">1,000</h2>
+                            <span class="trend up"><i class="fas fa-arrow-up"></i> 12% from last sim</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="icon-wrapper purple">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Protocol</h3>
+                            <h2 id="current-protocol">PBFT</h2>
+                            <span class="trend neutral">Byzantine Fault Tolerant</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="icon-wrapper green">
+                            <i class="fas fa-stopwatch"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Avg Latency</h3>
+                            <h2 id="avg-latency">45ms</h2>
+                            <span class="trend up"><i class="fas fa-arrow-down"></i> optimized</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="icon-wrapper red">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Fault Tolerance</h3>
+                            <h2 id="fault-tolerance">33%</h2>
+                            <span class="trend neutral">Safe Threshold</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Visualization Area -->
+                <div class="visual-panel">
+                    <div class="panel-header">
+                        <h2>Network Throughput Analysis</h2>
+                        <div class="panel-actions">
+                            <button class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <!-- Mocking a chart with CSS for aesthetics -->
+                        <div class="mock-chart">
+                            <svg viewBox="0 0 800 300" class="line-chart">
+                                <path fill="url(#gradient)" d="M0 300 L0 150 Q 100 200, 200 100 T 400 150 T 600 80 T 800 120 L800 300 Z" opacity="0.3"/>
+                                <path fill="none" stroke="var(--primary)" stroke-width="4" d="M0 150 Q 100 200, 200 100 T 400 150 T 600 80 T 800 120"/>
+                                <defs>
+                                    <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.8"/>
+                                        <stop offset="100%" stop-color="var(--primary)" stop-opacity="0"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom details -->
+                <div class="bottom-grid">
+                    <div class="activity-feed card">
+                        <h3>Recent Consensus Rounds</h3>
+                        <ul class="activity-list" id="activity-feed-list">
+                            <!-- Injected dynamically by JS -->
+                        </ul>
+                    </div>
+
+                    <div class="system-parameters card">
+                        <h3>Environment Details</h3>
+                        <div class="param-row">
+                            <span>Max Agents:</span>
+                            <strong>1000</strong>
+                        </div>
+                        <div class="param-row">
+                            <span>Steps Limit:</span>
+                            <strong>5000</strong>
+                        </div>
+                        <div class="param-row">
+                            <span>Storage Path:</span>
+                            <code>/simulations/results</code>
+                        </div>
+                        <div class="param-row">
+                            <span>API Status:</span>
+                            <span class="status-pill online">Healthy</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </section>
+
+            <!-- Simulations View -->
+            <section id="simulations" class="view-section">
+                <div class="card">
+                    <h2>Simulation Configurations</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Use the top bar button to automatically spawn a new simulation with a dynamically randomized agent count.</p>
+                    <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px;">
+                        <h3>Latest Simulation Log</h3>
+                        <p id="sim-log-text" style="font-family: monospace; color: var(--success); margin-top: 10px;">Waiting for first run...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Network View -->
+            <section id="network" class="view-section">
+                <div class="card" style="display: flex; gap: 30px;">
+                    <div style="flex: 2;">
+                        <h2>Network Topology Interactive Map</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">Real-time node mesh visualization of the decentralized protocol.</p>
+                        
+                        <div style="position: relative; width: 100%; height: 500px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <canvas id="topologyCanvas" width="600" height="500"></canvas>
+                        </div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                        <h3 style="margin-bottom: 20px;">Topology Details</h3>
+                        <div class="param-row">
+                            <span>Architecture:</span>
+                            <strong style="color: var(--primary);">Complete Graph</strong>
+                        </div>
+                        <div class="param-row">
+                            <span>Connection Type:</span>
+                            <strong>Peer-to-Peer (Decentralized)</strong>
+                        </div>
+                        <div class="param-row">
+                            <span>Active Edges:</span>
+                            <strong id="edge-count">...</strong>
+                        </div>
+                        <div class="param-row">
+                            <span>Node Sync Status:</span>
+                            <span class="status-pill online">100% Synchronous</span>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 13px; margin-top: 30px; line-height: 1.6;">
+                            In a pure full-mesh complete graph, every individual agent is directly connected mathematically to every other agent. A broadcasted message incurs only 1 network hop.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings View -->
+            <section id="settings" class="view-section">
+                <div class="card">
+                    <h2>System Settings</h2>
+                    <div style="margin-top: 20px; display: flex; gap: 20px; flex-direction: column;">
+                        <label style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
+                            <span>Enforce Zero-Fault Accuracy</span>
+                            <input type="checkbox" checked disabled>
+                        </label>
+                        <label style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
+                            <span>Block Proposers</span>
+                            <select style="background: var(--bg-dark); color: white; border: 1px solid var(--border-color); padding: 5px; border-radius: 4px;">
+                                <option>Static (Agent 0)</option>
+                                <option>Rotating Leader</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Logic Script -->
+    <script src="script.js"></script>
+</body>
+</html>
